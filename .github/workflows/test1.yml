@@ -1,0 +1,31 @@
+name: Run Python Script on Change
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11.7 # Choose the Python version you want to use
+        
+    - name: Set up change files
+      uses: tj-actions/changed-files@v41
+      id: changed_files
+      with:
+          files: '**/*'  # Include all files in the repository
+          separator: ','
+          # include_untracked: true  # Include untracked files
+    
+    - name: Run Python script on changed files
+      run: |
+        python code_schema.py --changed_files "${{ steps.changed_files.outputs.all_changed_files }}"
